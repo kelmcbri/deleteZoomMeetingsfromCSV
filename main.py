@@ -74,65 +74,15 @@ def getCSV():
     with open(inputFile) as csvfile:
         csvReader = csv.DictReader(csvfile)
         for rows in csvReader:
-            startDate = rows["startDate"]
-            classStartTime = rows["startTime"]
-            startTimeSplit = classStartTime.split()
-            meetingStartDateTime = (
-                startDate + ' ' + startTimeSplit[0] + ' ' + startTimeSplit[1])
-            meetingStart = datetime.strptime(
-                meetingStartDateTime, "%d-%b-%Y %I:%M:%S %p")
-            startTime = meetingStart.strftime("%Y-%m-%dT%H:%M:%S")
-            classLocation = rows["location"]
-            locationSplit = classLocation.split()
-            timezone = ""
-            if locationSplit[1] == "Eastern":
-                timezone = "America/New_York"
-            if locationSplit[1] == "Central":
-                timezone = "America/Chicago"
-            if locationSplit[1] == "Mountain":
-                timezone = "America/Denver"
-            if locationSplit[1] == "Pacific":
-                timezone = "America/Los_Angeles"
-
             meetingDetails.append(
-                {
-                    "tracking_fields": [
-                                    {"field": "CLASS_ID",
-                                     "value": rows["CLASS_ID"]
-                                     }],
-                    "Saba_ID": rows["CLASS_ID"],
-                    "topic": rows["topic"],
-                    "type": 2,
-                    "host": rows["host"],
-                    "start_time": (startTime),
-                    "agenda": "",
-                    "schedule_for": "",
-                    "recurrence": {"type": 1,
-                                   "repeat_interval": 1
-                                   },
-                    "timezone": (timezone),
-                    "duration": rows["duration"],
-                    "settings": {"host_video": "true",
-                                 "participant_video": "true",
-                                 "join_before_host": "False",
-                                 "jbh_time": 5,
-                                 "mute_upon_entry": "False",
-                                 "watermark": "true",
-                                 "audio": "both",
-                                 "auto_recording": "none",
-                                 "waiting_room": "True",
-                                 "alternative_hosts":
-                                 rows["alternative_host"],
-                                 "alternative_hosts_email_notification":
-                                 "False"
-                                 }
-                })
+                {"meeting": rows["meeting"]}
+                )
 
         # print(meetingDetails)
         return(meetingDetails)
 
 def deleteMeetings(meetingsList):
-    print("\nCreating Zoom Meetings")
+    print("\nDeleting Zoom Meetings")
     if bearer != "":
         headers = {'authorization': ('Bearer ' + (bearer)),
                    'content-type': 'application/json'}
