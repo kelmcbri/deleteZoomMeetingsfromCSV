@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="/Users/kellermcbride/github/deleteZoomMeetingsfromCSV"
+VIRTUAL_ENV="/Users/kellermcbride/Documents/github/deleteZoomMeetingsfromCSV"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

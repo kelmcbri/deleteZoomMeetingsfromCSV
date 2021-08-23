@@ -14,6 +14,7 @@ inputFile = ""
 outputFileJSON = ""
 outputFileCSV = ""
 
+
 """
 Load the keys from config.json file
 The config.json file looks like this:
