@@ -83,52 +83,18 @@ def getCSV():
 
 def deleteMeetings(meetingsList):
     print("\nDeleting Zoom Meetings")
+    payload = {}
     if bearer != "":
         headers = {'authorization': ('Bearer ' + (bearer)),
                    'content-type': 'application/json'}
     else:
         headers = {'authorization': 'Bearer %s' % generateToken(),
                    'content-type': 'application/json'}
-    meetingsReport = []
+
     for eachMeeting in meetingsList:
-        user = eachMeeting['host']
-        response = requests.post(
-            f'https://api.zoom.us/v2/users/{user}/meetings',
-            headers=headers,
-            data=json.dumps(eachMeeting))
+        url = ("https://api.zoom.us/v2/meetings/" + eachMeeting["meeting"] + "?schedule_for_reminder=false&cancel_meeting_reminder=false")
+        response = requests.request("DELETE", url, headers=headers, data=payload)
 
-        response_json_object = json.loads(response.text)
-        response_json_object["Saba_ID"] = eachMeeting["Saba_ID"]
-        meetingsReport.append(
-            {
-                "Saba_ID": response_json_object["Saba_ID"],
-                "Zoom_UUID": response_json_object["uuid"],
-                "Zoom_ID": response_json_object["id"],
-                "start_url": response_json_object["start_url"],
-                "join_url": response_json_object["join_url"]
-            })
-
-        print("Created Zoom Meeting ID" + str(response_json_object["id"])
-              + " with Saba_ID " + response_json_object["Saba_ID"])
-    return(meetingsReport)
-
-# Create deleted MeetingReport output
-
-def saveMeetingsReportCSV(meetingsReport):
-    if (outputFileCSV != ""):
-        fields = ["Saba_ID", "Zoom_UUID", "Zoom_ID", "start_url", "join_url"]
-        try:
-            with open((outputFileCSV), 'w', encoding='utf-8') as f:
-                # Define the header row
-                writer = csv.DictWriter(f, fieldnames=fields)
-                # Write the header row
-                writer.writeheader()
-                # Fill in data rows
-                writer.writerows(meetingsReport)
-            print("Output File " + str(outputFileCSV)
-                  + " with Saba-Zoom info created.")
-        except:
-            print("*** Failed to write CSV output File. \n")
 
 
 def main():
@@ -136,7 +102,6 @@ def main():
     # import meeting info from csv file into meetingsList array
     meetingsList = getCSV()
     meetingsReport = deleteMeetings(meetingsList)
-    saveMeetingsReportCSV(meetingsReport)
 
 if __name__ == "__main__":
     main()
